@@ -29,6 +29,20 @@ The issue arises when we use a [third-party module](https://github.com/garronej/
 
 The internal import of `@emotion/react` within `a-module-that-uses-emotion` results in the CJS distribution of `@emotion/react` being imported. However, the import made in `src/main.tsx` results in the ES Module (ESM) distribution of `@emotion/react` being imported. This causes multiple instances of the same module.  
 
+### With Next.js
+
+Note that this behaviour isn't observable in Next.js  
+
+<img width="1728" alt="image" src="https://github.com/garronej/vite-dual-package-repro-repo/assets/6702424/792db4c6-6cef-4b88-9866-a36ebdb3ad13">  
+
+### With Node in type: module mode
+
+The same experiment with node in `type: module` will led to having no module duplication because in emotion the `exports.import` condition point to a file
+that only re-export the CJS distribution however, the import from within `a-module-that-uses-emotion` of `@emotion/react` result in `exports.default` to be
+imported and the import in the main file result in `exports.import` to be imported.  
+
 ## Comparison
 
-Interestingly, this problem does not occur with `@mui/material`, where only the ESM distribution is used. However, the approach implemented by Material-UI, which involves placing sub `package.json` files in specific import paths instead of using the `exports` field, is incompatible with Node running in `type: module` mode. You can read more about this in the corresponding [issue discussion](https://github.com/mui/material-ui/issues/37335).
+Interestingly, this problem does not occur with `@mui/material`, where only the ESM distribution is used. However, the approach implemented by Material-UI, which involves placing sub `package.json` files in specific import paths instead of using the `exports` field, is incompatible with Node running in `type: module` mode. You can read more about this in the corresponding [issue discussion](https://github.com/mui/material-ui/issues/37335).  
+
+
