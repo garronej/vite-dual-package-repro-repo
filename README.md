@@ -29,10 +29,6 @@ The issue arises when we use a [third-party module](https://github.com/garronej/
 
 The internal import of `@emotion/react` within `a-module-that-uses-emotion` results in the CJS distribution of `@emotion/react` being imported. However, the import made in `src/main.tsx` results in the ES Module (ESM) distribution of `@emotion/react` being imported. This causes multiple instances of the same module.  
 
-The consequence of this is that a module publisher that would like to have emotion as direct or indirect peer dependency must in turn make sure to provide an ESM distribution
-bundlers can work with.  
-
-
 ## Comparison
 
 Interestingly, this problem does not occur with `@mui/material`, where only the ESM distribution is used. However, the approach implemented by Material-UI, which involves placing sub `package.json` files in specific import paths instead of using the `exports` field, is incompatible with Node running in `type: module` mode. You can read more about this in the corresponding [issue discussion](https://github.com/mui/material-ui/issues/37335).
